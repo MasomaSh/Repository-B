@@ -31,4 +31,13 @@ so give all that should go under Architect submission
 
 Yes. For your Architect submission, I would keep it as a clear planning document...
 
+[STUDENT]
+
+ok, I have pushed and committed in github , whats the next step?
+
+[AGENT]
+
+Great. 🎉 Your Architect stage is now complete.
+According to the.........
+
 ===== TRANSCRIPT END =====
