@@ -6,6 +6,7 @@ from text_analyzer.analyzer import (
     count_sentences,
     count_unique_words,
     count_words,
+    extract_words,
     most_common_words,
     readability_score,
 )
@@ -89,3 +90,41 @@ def test_analyze_text():
     assert results["paragraphs"] == 1
     assert results["unique_words"] == 3
     assert results["most_common_words"][0] == ("hello", 2)
+
+
+def test_whitespace_only_text():
+    text = "   \n\n   "
+
+    assert count_words(text) == 0
+    assert count_sentences(text) == 0
+    assert count_paragraphs(text) == 0
+    assert count_unique_words(text) == 0
+
+
+def test_punctuation_only_text():
+    text = "!!! ??? ..."
+
+    assert count_words(text) == 0
+    assert count_unique_words(text) == 0
+    assert average_word_length(text) == 0
+
+
+def test_apostrophes_in_words():
+    text = "Don't stop. It's working."
+
+    assert "don't" in extract_words(text)
+    assert "it's" in extract_words(text)
+
+
+def test_word_count_is_case_insensitive():
+    text = "Python python PYTHON"
+
+    assert count_words(text) == 3
+    assert count_unique_words(text) == 1
+    assert most_common_words(text, 1) == [("python", 3)]
+
+
+def test_multiple_sentence_punctuation():
+    text = "Really?! Yes!"
+
+    assert count_sentences(text) == 2
