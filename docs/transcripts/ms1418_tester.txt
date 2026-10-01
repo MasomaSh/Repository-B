@@ -1,0 +1,432 @@
+STUDENT_NAME: Masoma Shoayb
+NETID: ms1418
+OPTION: 3
+ROLE: tester
+AGENT_TOOL: ChatGPT
+REPOSITORY_B_URL: https://github.com/MasomaSh/text-analyzer
+===== TRANSCRIPT START =====
+
+[STUDENT]
+lets go to the tester
+
+[AGENT]
+Absolutely. Let's move to Stage 3 — Tester.
+
+The goal of the Tester stage is to check whether the Builder implementation actually works correctly, especially for edge cases, not just whether the existing tests pass.
+
+You already have 13 tests, so we don't need to start over.
+
+### Tester — Step 1: Review what we currently test
+
+Run:
+
+```bash
+pytest -v
+```
+
+The `-v` just gives us the name of every test so we can see exactly what is being tested.
+
+Send me the output. Then we'll identify which edge cases are missing and add them one at a time.
+
+[STUDENT]
+done, what are the next steps ?
+
+[AGENT]
+Good. Now we move from running the tests to actually testing for missing edge cases.
+
+### Tester — Step 2: Add edge-case tests
+
+Your current tests already cover many basics, but we should add a few important cases that match the Architect plan:
+
+1. Whitespace-only text
+2. Text with only punctuation
+3. Words with apostrophes, such as `"don't"`
+4. Case-insensitive word counting, such as `"Python python PYTHON"`
+5. Sentence counting with multiple punctuation marks, such as `"Really?! Yes!"`
+
+We'll add these to `tests/test_analyzer.py`.
+
+For now, let's do only the first one.
+
+Open the test file:
+
+```bash
+open -a "Visual Studio Code" tests/test_analyzer.py
+```
+
+Go to the bottom of the file and add:
+
+```python
+def test_whitespace_only_text():
+    text = "   \n\n   "
+
+    assert count_words(text) == 0
+    assert count_sentences(text) == 0
+    assert count_paragraphs(text) == 0
+    assert count_unique_words(text) == 0
+```
+
+Save the file.
+
+Then run:
+
+```bash
+pytest
+```
+
+We should now have 14 passed.
+
+Don't add the other tests yet. Send me the pytest result, and we'll continue with the next edge case.
+
+[STUDENT]
+yes , passed , other steps, all
+
+[AGENT]
+Great. Since the first edge case passed, let's finish the Tester stage systematically.
+
+### Step 3 — Add the remaining edge-case tests
+
+Open the test file again:
+
+```bash
+open -a "Visual Studio Code" tests/test_analyzer.py
+```
+
+At the bottom, add these four tests:
+
+```python
+def test_punctuation_only_text():
+    text = "!!! ??? ..."
+
+    assert count_words(text) == 0
+    assert count_unique_words(text) == 0
+    assert average_word_length(text) == 0
+
+
+def test_apostrophes_in_words():
+    text = "Don't stop. It's working."
+
+    assert "don't" in extract_words(text)
+    assert "it's" in extract_words(text)
+
+
+def test_word_count_is_case_insensitive():
+    text = "Python python PYTHON"
+
+    assert count_words(text) == 3
+    assert count_unique_words(text) == 1
+    assert most_common_words(text, 1) == [("python", 3)]
+
+
+def test_multiple_sentence_punctuation():
+    text = "Really?! Yes!"
+
+    assert count_sentences(text) == 2
+```
+
+Save the file.
+
+Then run:
+
+```bash
+pytest
+```
+
+You should now have 18 passed.
+
+Then run:
+
+```bash
+ruff check .
+```
+
+You should get:
+
+```text
+All checks passed!
+```
+
+### After that
+
+We'll do the final Tester workflow:
+
+1. Existing tests
+2. Edge-case tests
+3. Run full test suite
+4. Run Ruff
+5. Review the test file
+6. Commit the Tester changes
+7. Push to GitHub
+8. Move to Reviewer/Refactor stage
+
+So for now, add those four tests and run `pytest` + `ruff check .`.
+
+[STUDENT]
+tests/test_analyzer.py ...............F.. [100%]
+
+=============================================================== FAILURES ================================================================
+_______________________________________________________ test_apostrophes_in_words _______________________________________________________
+
+    def test_apostrophes_in_words():
+        text = "Don't stop. It's working."
+
+>       assert "don't" in extract_words(text)
+E       NameError: name 'extract_words' is not defined
+
+tests/test_analyzer.py:114: NameError
+======================================================== short test summary info ========================================================
+FAILED tests/test_analyzer.py::test_apostrophes_in_words - NameError: name 'extract_words' is not defined
+===================================================== 1 failed, 17 passed in 0.10s
+
+[AGENT]
+Good catch — this is a test-file issue, not a problem with your `extract_words()` function.
+
+The test is calling `extract_words()`, but that function wasn't imported at the top of `tests/test_analyzer.py`.
+
+### Step 1 — Fix the import
+
+Open the test file:
+
+```bash
+open -a "Visual Studio Code" tests/test_analyzer.py
+```
+
+At the top, you currently have an import from `text_analyzer.analyzer`. Add `extract_words` to that import.
+
+It should look something like:
+
+```python
+from text_analyzer.analyzer import (
+    analyze_text,
+    average_word_length,
+    count_characters,
+    count_paragraphs,
+    count_sentences,
+    count_unique_words,
+    count_words,
+    extract_words,
+    most_common_words,
+    readability_score,
+)
+```
+
+Don't change anything else.
+
+Save the file, then run:
+
+```bash
+pytest
+```
+
+You should now get:
+
+```text
+18 passed
+```
+
+Send me the result, and we'll continue with the Tester steps.
+
+[STUDENT]
+all checked , ruff check as well , what are the next steps
+
+[AGENT]
+Perfect. 18 tests pass and Ruff passes. The Tester stage is working.
+
+Now we need to review the tests themselves before committing them.
+
+### Tester — Step 4: Review the test file
+
+Run this in Terminal:
+
+```bash
+cat tests/test_analyzer.py
+```
+
+This lets us check that the 18 tests are actually testing the intended behavior and that we didn't accidentally duplicate or miss anything.
+
+Send me the output. I'll review it with you and tell you whether we need any changes before we commit the Tester work.
+
+[STUDENT]
+(.venv) masomashoayb@Masomas-MacBook-Pro text-analyzer % cat tests/test_analyzer.py
+from text_analyzer.analyzer import (
+    analyze_text,
+    average_word_length,
+    count_characters,
+    count_paragraphs,
+    count_sentences,
+    count_unique_words,
+    count_words,
+    extract_words,
+    most_common_words,
+    readability_score,
+)
+
+
+def test_count_characters():
+    assert count_characters("Hello") == 5
+
+
+def test_count_words():
+    assert count_words("Hello world") == 2
+
+
+def test_count_sentences():
+    text = "Hello world! How are you? I am fine."
+    assert count_sentences(text) == 3
+
+
+def test_count_paragraphs():
+    text = "First paragraph.\n\nSecond paragraph."
+    assert count_paragraphs(text) == 2
+
+
+def test_multiple_blank_lines_do_not_create_paragraphs():
+    text = "First paragraph.\n\n\nSecond paragraph."
+    assert count_paragraphs(text) == 2
+
+
+def test_count_unique_words():
+    text = "Data data DATA science"
+    assert count_unique_words(text) == 2
+
+
+def test_punctuation_is_not_part_of_words():
+    text = "Hello, world!"
+    assert count_words(text) == 2
+
+
+def test_most_common_words():
+    text = "apple apple banana banana banana orange"
+    assert most_common_words(text, 2) == [
+        ("banana", 3),
+        ("apple", 2),
+    ]
+
+
+def test_average_word_length():
+    text = "cat dog"
+    assert average_word_length(text) == 3
+
+
+def test_average_word_length_empty_text():
+    assert average_word_length("") == 0
+
+
+def test_readability_empty_text():
+    assert readability_score("") == 0
+
+
+def test_empty_text():
+    results = analyze_text("")
+
+    assert results["characters"] == 0
+    assert results["words"] == 0
+    assert results["sentences"] == 0
+    assert results["paragraphs"] == 0
+    assert results["unique_words"] == 0
+    assert results["most_common_words"] == []
+    assert results["average_word_length"] == 0
+    assert results["readability_score"] == 0
+
+
+def test_analyze_text():
+    text = "Hello world. Hello Python."
+
+    results = analyze_text(text)
+
+    assert results["characters"] == len(text)
+    assert results["words"] == 4
+    assert results["sentences"] == 2
+    assert results["paragraphs"] == 1
+    assert results["unique_words"] == 3
+    assert results["most_common_words"][0] == ("hello", 2)
+
+
+def test_whitespace_only_text():
+    text = "   \n\n   "
+
+    assert count_words(text) == 0
+    assert count_sentences(text) == 0
+    assert count_paragraphs(text) == 0
+    assert count_unique_words(text) == 0
+
+
+def test_punctuation_only_text():
+    text = "!!! ??? ..."
+
+    assert count_words(text) == 0
+    assert count_unique_words(text) == 0
+    assert average_word_length(text) == 0
+
+
+def test_apostrophes_in_words():
+    text = "Don't stop. It's working."
+
+    assert "don't" in extract_words(text)
+    assert "it's" in extract_words(text)
+
+
+def test_word_count_is_case_insensitive():
+    text = "Python python PYTHON"
+
+    assert count_words(text) == 3
+    assert count_unique_words(text) == 1
+    assert most_common_words(text, 1) == [("python", 3)]
+
+
+def test_multiple_sentence_punctuation():
+    text = "Really?! Yes!"
+
+    assert count_sentences(text) == 2%
+
+[AGENT]
+I reviewed it. The test suite looks good for the scope of this project.
+
+You now have coverage for:
+
+- Basic character, word, sentence, and paragraph counting
+- Multiple blank lines
+- Case-insensitive words
+- Punctuation
+- Apostrophes
+- Unique words
+- Most common words
+- Average word length
+- Empty text
+- Whitespace-only text
+- Punctuation-only text
+- Readability edge case
+- The combined `analyze_text()` function
+- Multiple sentence-ending punctuation
+
+One small thing: the `%` shown after `2` is just your Terminal prompt marker because the file doesn't end with a newline. It isn't part of the Python code and isn't an error.
+
+### Tester — Step 5: Run the complete verification
+
+Run these two commands:
+
+```bash
+pytest
+```
+
+Then:
+
+```bash
+ruff check .
+```
+
+You should get:
+
+```text
+18 passed
+```
+
+and:
+
+```text
+All checks passed!
+```
+
+If both pass, the Tester stage is complete. Then we'll commit these new tests and push them to GitHub before moving to the Reviewer/Refactor stage.
+
+===== TRANSCRIPT END =====
