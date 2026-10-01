@@ -1,5 +1,5 @@
 # Text Analyzer
-
+[![Tests](https://github.com/MasomaSh/text-analyzer/actions/workflows/tests.yml/badge.svg)](https://github.com/MasomaSh/text-analyzer/actions/workflows/tests.yml)
 A small Python command-line tool that analyzes a text file and reports basic text statistics, including word count, sentence count, paragraph count, unique words, common words, average word length, and an approximate readability score.
 
 ## Features
