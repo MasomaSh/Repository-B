@@ -165,3 +165,57 @@ The project does not include a graphical interface, database, external API, mach
 This project was developed using an AI-assisted workflow with separate Architect, Builder, Tester, and Reviewer stages.
 
 The Architect stage was used to define the project scope, structure, requirements, and implementation plan. The Builder stage was used to implement the planned structure and functionality. Automated tests and Ruff were then used to verify the implementation and code quality.
+
+## Manual Smoke Test
+
+The project was manually tested after implementation.
+
+The documented setup instructions were followed by creating and activating the virtual environment and installing the required dependencies from `requirements.txt`.
+
+The main feature was tested with:
+
+```bash
+python main.py sample.txt
+```
+
+The program started successfully and produced the expected text analysis report, including character count, word count, sentence count, paragraph count, unique word count, average word length, readability score, and most common words.
+
+Invalid file handling was also tested with:
+
+```bash
+python main.py missing.txt
+```
+
+The program returned an error message indicating that the file was not found and did not produce a traceback.
+
+The project does not use containers, so no container build or runtime test was required.
+
+## Evaluate and Reflect
+
+### Selected Option
+
+Option 3 was selected for this project.
+
+### Project Purpose
+
+The purpose of this project is to build a small command-line text analyzer that calculates basic text statistics from a text file. The project was intentionally kept simple and uses Python's standard library for the core analysis.
+
+### AI-Assisted Workflow
+
+The Architect role was used to examine the project requirements and create the implementation plan in `docs/plan.md`. The plan defined the project structure, analysis functions, CLI behavior, testing requirements, and scope limitations.
+
+The Builder role implemented the architecture by creating the Python package, CLI, tests, sample input, configuration files, documentation, and supporting project files.
+
+The Tester role independently reviewed the implementation against the planned requirements and focused on additional edge cases. The test suite was expanded from 13 tests to 18 tests.
+
+### AI Recommendation Accepted
+
+One recommendation I accepted was to add edge-case tests for whitespace-only text, punctuation-only text, apostrophes, case-insensitive word counting, and multiple sentence-ending punctuation. These tests helped verify behavior beyond the basic examples.
+
+### AI Recommendation Changed or Rejected
+
+One recommendation I changed was the testing workflow. Instead of relying only on the existing test suite, I reviewed the test file myself and added additional cases based on the project requirements. I also corrected a missing `extract_words` import when the new apostrophe test initially failed.
+
+### Independent Verification
+
+I independently verified the final project by running the application from the command line with both a valid sample file and a missing file. I also ran the complete pytest suite and Ruff checks. The final test suite passed all 18 tests, and Ruff reported no issues.
