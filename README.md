@@ -1,18 +1,23 @@
 # Text Analyzer
 [![Tests](https://github.com/MasomaSh/text-analyzer/actions/workflows/tests.yml/badge.svg)](https://github.com/MasomaSh/text-analyzer/actions/workflows/tests.yml)
 
-A small Python command-line tool that analyzes a text file and reports basic text statistics, including word count, sentence count, paragraph count, unique words, common words, average word length, and an approximate readability score.
+A small Python command-line text analyzer that reads a UTF-8 text file and reports basic text statistics and readability information.
 
 ## Features
 
-- Count characters, words, sentences, and paragraphs
-- Count unique words
-- Find the most common words
-- Calculate average word length
-- Calculate an approximate Flesch Reading Ease score
-- Handle missing files and invalid file paths without crashing
-- Read UTF-8 text files
-- Run from the command line
+The analyzer reports:
+
+- Number of characters
+- Number of words
+- Number of sentences
+- Number of paragraphs
+- Number of unique words
+- Most common words
+- Average word length
+- Approximate Flesch Reading Ease score
+- Clear error handling for missing or invalid files
+
+The project uses Python's standard library for the core text analysis functionality.
 
 ## Project Structure
 
@@ -41,23 +46,18 @@ text-analyzer/
 
 ## File Responsibilities
 
-- `text_analyzer/analyzer.py` contains the text analysis functions.
-- `text_analyzer/cli.py` handles command-line arguments, file reading, error handling, and report formatting.
+- `text_analyzer/analyzer.py` contains the main text analysis functions.
+- `text_analyzer/cli.py` handles the command-line interface and file input.
 - `main.py` provides the main entry point for running the application.
-- `tests/test_analyzer.py` contains automated tests for the analysis functions.
-- `sample.txt` provides a sample input file for manual testing.
-- `docs/plan.md` contains the finalized project implementation plan.
-- `docs/transcripts/ms1418_architect.txt` contains the Architect-stage conversation.
-- `docs/transcripts/ms1418_builder.txt` contains the Builder-stage conversation.
-- `docs/transcripts/ms1418_tester.txt` contains the Tester-stage conversation.
+- `tests/test_analyzer.py` contains the automated test suite.
+- `docs/plan.md` contains the implementation plan created during the Architect stage.
+- `docs/transcripts/` contains the visible AI conversation transcripts from the Architect, Builder, and Tester stages.
 
 ## Requirements
 
-- Python 3.9 or later
+- Python 3.9+
 - pytest
 - Ruff
-
-The core text analysis uses only Python standard-library modules.
 
 ## Installation
 
@@ -68,7 +68,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-Install the project dependencies:
+Install the required packages:
 
 ```bash
 pip install -r requirements.txt
@@ -82,74 +82,50 @@ Run the analyzer by providing a text file:
 python main.py sample.txt
 ```
 
-The program prints a report similar to:
+The program prints a report containing the text statistics and readability information.
 
-```text
-Text Analysis Report
---------------------
-Characters: ...
-Words: ...
-Sentences: ...
-Paragraphs: ...
-Unique words: ...
-Average word length: ...
-Readability score: ...
+### Invalid File Handling
 
-Most common words:
-...
-```
+If the specified file does not exist, the program displays a clear error message instead of producing a Python traceback.
 
-You can also provide another text file:
-
-```bash
-python main.py myfile.txt
-```
-
-## Invalid File Handling
-
-If the file does not exist, the program displays an error message instead of crashing:
+Example:
 
 ```bash
 python main.py missing.txt
 ```
 
-Example:
-
-```text
-Error: File 'missing.txt' was not found.
-```
-
-The program also checks that the provided path is a file and handles invalid UTF-8 files and other file-reading errors.
-
 ## Testing
 
-The project uses pytest for automated testing.
+The project uses `pytest` for automated testing.
 
 Run the full test suite with:
 
 ```bash
-pytest
+pytest -v
 ```
 
-The test suite contains 18 tests covering normal behavior and edge cases, including:
+The final test suite contains **18 tests** covering both typical inputs and edge cases.
+
+Tests include:
 
 - Empty text
 - Whitespace-only text
 - Punctuation-only text
 - Repeated words
 - Case-insensitive word counting
-- Apostrophes
-- Multiple sentence-ending punctuation
+- Words containing apostrophes
+- Multiple sentence-ending punctuation marks
 - Multiple blank lines
-- Average word length for empty text
-- Readability for empty text
+- Empty-text average word length
+- Empty-text readability
 - Combined analysis results
+- File and input handling
 
-The final test suite passed all 18 tests.
+All 18 tests passed during final verification.
 
 ## Code Quality
 
-Ruff is used to check the Python code for common errors and code quality issues.
+Ruff is used for Python linting.
 
 Run Ruff with:
 
@@ -159,108 +135,161 @@ ruff check .
 
 The final Ruff check reported no issues.
 
-## Design Decisions and Limitations
+## Continuous Integration
 
-The project intentionally keeps text analysis simple and dependency-light.
+GitHub Actions automatically runs checks when changes are pushed or a pull request is opened.
 
-- Words are normalized to lowercase.
-- Sentence counting uses `.`, `!`, and `?` as sentence-ending punctuation.
-- Paragraphs are separated by blank lines.
-- Syllable counts are estimated using a simple rule-based approach.
-- The readability score is an approximate Flesch Reading Ease score.
-- The tool currently analyzes one UTF-8 text file at a time.
+The workflow:
 
-The project does not include a graphical interface, database, external API, machine-learning model, advanced NLP processing, or support for PDF and Word documents.
+1. Checks out the repository.
+2. Sets up Python 3.11.
+3. Installs the project dependencies.
+4. Checks Python syntax.
+5. Runs Ruff.
+6. Runs the full pytest test suite.
 
-## AI-Assisted Development
+The workflow is defined in:
 
-This project was developed using a structured AI-assisted workflow with separate Architect, Builder, and Tester roles.
+```text
+.github/workflows/tests.yml
+```
 
-### Architect
-
-The Architect stage examined the project requirements and created the implementation plan in `docs/plan.md`. The plan defined the project structure, analysis functions, command-line behavior, testing requirements, edge cases, and scope limitations.
-
-### Builder
-
-The Builder stage used the finalized Architect plan to implement the project. The Builder created the Python package, command-line interface, automated tests, sample input, configuration files, and project documentation.
-
-I reviewed the generated implementation and made corrections where necessary before continuing to the testing stage.
-
-### Manual Smoke Test
-
-Before the Tester stage, I manually verified that the project could be set up and run successfully. I followed the documented installation instructions, created and activated the virtual environment, installed the dependencies, and ran the application with a sample text file.
-
-### Tester
-
-The Tester stage independently reviewed the implementation against `docs/plan.md`, inspected and ran the test suite, checked typical and edge-case behavior, and reviewed the setup and usage instructions.
-
-The Tester identified additional edge cases that should be tested. After reviewing those recommendations, I expanded the test suite from 13 tests to 18 tests and corrected a missing `extract_words` import when the new apostrophe test initially failed.
+The status badge at the top of this README shows the current CI status.
 
 ## Manual Smoke Test
 
-The project was manually tested after implementation and before the Tester stage.
+Before the Tester stage, I manually verified the application by following the setup instructions and running the main functionality.
 
-The documented setup instructions were followed by creating and activating the virtual environment and installing the required dependencies from `requirements.txt`.
+The smoke test included:
 
-The main feature was tested with:
+1. Creating and activating a virtual environment.
+2. Installing the required packages.
+3. Running the analyzer on `sample.txt`.
+4. Checking that the expected analysis report was produced.
+5. Running the analyzer with a missing file.
+6. Checking that the program returned a clear file-not-found error without a traceback.
 
-```bash
-python main.py sample.txt
+No containers were required for this project.
+
+## AI-Assisted Development
+
+The project was completed using three separate AI-assisted development roles: Architect, Builder, and Tester.
+
+Each role was completed in a separate AI conversation.
+
+### 1. Architect
+
+The Architect stage examined the project requirements, proposed the project structure and implementation approach, identified risks and testing requirements, and created the implementation plan in:
+
+```text
+docs/plan.md
 ```
 
-The program started successfully and produced the expected text analysis report, including:
+The plan defined the analysis functions, command-line behavior, testing requirements, edge cases, and project scope.
 
-- Character count
-- Word count
-- Sentence count
-- Paragraph count
-- Unique word count
-- Average word length
-- Readability score
-- Most common words
+I reviewed the plan before implementation and made any necessary corrections before providing it to the Builder.
 
-Invalid file handling was also tested with:
+### 2. Builder
 
-```bash
-python main.py missing.txt
+The Builder received the Architect plan and implemented the project.
+
+The Builder created and updated the application files, tests, and documentation according to the plan.
+
+After the Builder stage, I reviewed the generated code and made my own corrections where needed.
+
+### 3. Manual Smoke Test
+
+Before using the Tester role, I independently ran the application myself.
+
+I verified that:
+
+- The installation instructions worked.
+- The program started successfully.
+- The main text analysis functionality worked.
+- The output was produced as expected.
+- Missing-file handling worked without a traceback.
+
+The smoke test was completed before the Tester conversation.
+
+### 4. Tester
+
+The Tester independently reviewed the implementation against `docs/plan.md`, inspected the tests, considered typical and edge-case inputs, and checked the setup instructions.
+
+The Tester identified additional edge cases that were not initially covered.
+
+Based on the Tester recommendations, I expanded the test suite from 13 tests to 18 tests.
+
+One issue was also found during testing with the apostrophe test because `extract_words` was not imported correctly. I corrected the issue and reran the tests.
+
+The final result was:
+
+```text
+18 passed
 ```
 
-The program returned an error message indicating that the file was not found and did not produce a traceback.
+Ruff was also run again after the corrections and reported no issues.
 
-The project does not use containers, so no container build or runtime test was required.
+## AI Conversation Transcripts
+
+The project includes the visible conversation transcripts from the three AI roles used during development:
+
+- `docs/transcripts/ms1418_architect.txt`
+- `docs/transcripts/ms1418_builder.txt`
+- `docs/transcripts/ms1418_tester.txt`
+
+Each transcript preserves the visible conversation for its respective role, including:
+
+- My prompts
+- AI responses
+- Follow-up questions
+- Corrections
+- The final visible result or summary
+
+The transcripts were saved as plain-text files and were not rewritten or shortened.
+
+Private information, if present, was removed or replaced with `[REDACTED]`.
+
+The three roles were completed in separate AI conversations:
+
+1. Architect
+2. Builder
+3. Tester
+
+Only conversation content visible to me is included. No hidden AI reasoning or internal chain of thought is included.
 
 ## Evaluate and Reflect
 
 ### Selected Option
 
-Option 3 was selected for this project: Create a New Project.
+**Option 3: Create a New Project**
+
+I selected the option to create a new project rather than modify an existing project.
 
 ### Project Purpose
 
-The purpose of this project is to build a small command-line text analyzer that calculates basic text statistics from a text file. The project was intentionally kept simple and uses Python's standard library for the core analysis.
+The purpose of the project is to create a simple command-line text analyzer that demonstrates Python development, testing, code quality, error handling, and an AI-assisted development workflow.
 
 ### AI Recommendation Accepted
 
-One recommendation I accepted was to add edge-case tests for whitespace-only text, punctuation-only text, apostrophes, case-insensitive word counting, and multiple sentence-ending punctuation.
+I accepted the Architect's recommendation to separate the project into analysis and command-line interface components. This made the text analysis functions easier to test independently from file and command-line handling.
 
-These tests helped verify behavior beyond the basic examples and increased the test suite from 13 tests to 18 tests.
+I also accepted the Tester's recommendation to expand the test suite with additional edge cases.
 
 ### AI Recommendation Changed or Rejected
 
-One recommendation I changed was the testing workflow. Instead of relying only on the existing test suite, I reviewed the test file myself and added additional cases based on the project requirements.
+The AI recommendations were not followed without review. Where recommendations did not fit the project's scope or requirements, I made the final decisions and adjusted the implementation accordingly.
 
-During this process, the new apostrophe test initially revealed a missing `extract_words` import. I corrected the import and reran the tests to verify the fix.
+For example, the project intentionally keeps the readability calculation approximate rather than adding a larger external NLP or readability library. This keeps the project small and focused on the required functionality.
 
 ### Independent Verification
 
-I independently verified the final project by:
+I independently verified the final project after the AI-assisted development stages by:
 
-1. Following the documented setup instructions.
-2. Creating and activating the virtual environment.
-3. Installing the dependencies from `requirements.txt`.
-4. Running the application with the valid `sample.txt` file.
-5. Running the application with a missing file to verify error handling.
-6. Running the complete pytest test suite.
-7. Running Ruff to check code quality.
+- Running the application manually with a valid input file.
+- Testing missing-file behavior.
+- Running all 18 automated tests.
+- Running Ruff.
+- Reviewing the project structure and README.
+- Confirming that the CI workflow was configured to run syntax checks, linting, and tests.
 
-The final test suite passed all 18 tests, and Ruff reported no issues.
+The final verification completed successfully with **18 passing tests** and no Ruff issues.
